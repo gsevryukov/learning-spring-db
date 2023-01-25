@@ -4,9 +4,10 @@ public interface AuthorShellService {
 
     void addAuthor();
 
+    void printAuthor();
+
     void listAllAuthors();
 
     void removeAuthor();
 
-    void printAuthor();
 }

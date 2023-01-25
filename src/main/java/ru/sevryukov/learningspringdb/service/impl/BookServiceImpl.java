@@ -22,11 +22,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBook(long id) {
-        bookRepo.deleteById(id);
-    }
-
-    @Override
     public Book getById(long id) {
         return bookRepo.getById(id);
     }
@@ -35,4 +30,15 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAll() {
         return bookRepo.getAll();
     }
+
+    @Override
+    public void editBook(long id, String bookName, List<Long> authorIds, List<Long> genreIds) {
+        bookRepo.editBook(id, bookName, authorIds, genreIds);
+    }
+
+    @Override
+    public void deleteBook(long id) {
+        bookRepo.deleteById(id);
+    }
+
 }

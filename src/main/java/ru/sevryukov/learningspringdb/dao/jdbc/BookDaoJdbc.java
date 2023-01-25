@@ -8,7 +8,6 @@ import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.BookEntity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public Book getById(long id) {
-        var params = Collections.singletonMap("id", id);
+        var params = Map.of("id", id);
         var sql = BASE_SELECT + "where b.id = :id";
         return namedParameterJdbcOperations.queryForObject(sql, params, new BookMapper());
     }
@@ -41,6 +40,22 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public List<Book> getAll() {
         return namedParameterJdbcOperations.query(BASE_SELECT, new BookMapper());
+    }
+
+    @Override
+    public void editBook(long id, String name, List<Long> authorIds, List<Long> genreIds) {
+        var params = Map.of(
+                "id", id,
+                "name", name,
+                "author_ids", authorIds.toArray(),
+                "genre_ids", genreIds.toArray()
+        );
+        var sql = "update book " +
+                "set \"name\" = :name, " +
+                "author_ids = :author_ids, " +
+                "genre_ids = :genre_ids" +
+                " where id = :id";
+        namedParameterJdbcOperations.update(sql, params);
     }
 
     @Override

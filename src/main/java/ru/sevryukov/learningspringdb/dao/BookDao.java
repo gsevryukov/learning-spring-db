@@ -13,5 +13,7 @@ public interface BookDao {
 
     List<Book> getAll();
 
+    void editBook(long id, String name, List<Long> authorIds, List<Long> genreIds);
+
     void deleteById(long id);
 }

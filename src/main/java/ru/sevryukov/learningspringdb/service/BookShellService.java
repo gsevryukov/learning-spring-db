@@ -4,11 +4,12 @@ public interface BookShellService {
 
     void addBook();
 
-    void editBook();
+    void printBook();
 
     void listAllBooks();
 
+    void editBook();
+
     void removeBook();
 
-    void printBook();
 }

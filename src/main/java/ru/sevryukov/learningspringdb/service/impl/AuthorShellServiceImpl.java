@@ -12,6 +12,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class AuthorShellServiceImpl implements AuthorShellService {
 
+    public static final String AUTHOR_HEADER = "ID\tAuthor full name";
     private final UserAskService userAskService;
     private final AuthorService authorService;
 
@@ -22,6 +23,23 @@ public class AuthorShellServiceImpl implements AuthorShellService {
         var firstName = userAskService.askUser(String.format(MSG_TEMPLATE, "first"));
         var lastName = userAskService.askUser(String.format(MSG_TEMPLATE, "last"));
         authorService.addAuthor(firstName, lastName);
+    }
+
+    @Override
+    public void printAuthor() {
+        var answer = userAskService.askUser("Enter author id...");
+        if (answer.equals("exit")) {
+            return;
+        }
+        try {
+            var id = Long.parseLong(answer);
+            var author = authorService.getById(id);
+            System.out.println(AUTHOR_HEADER
+                    + "\n" + author.getId() + "\t" + author.getFirstName() + " " + author.getLastname());
+        } catch (Exception ex) {
+            System.out.println("Enter a valid author id!");
+            printAuthor();
+        }
     }
 
     @Override
@@ -41,30 +59,13 @@ public class AuthorShellServiceImpl implements AuthorShellService {
             System.out.println("Enter a valid author id!");
             removeAuthor();
         }
-
     }
 
     private void printAuthors() {
         var authors = new HashMap<Long, String>();
         authorService.getAll().forEach(v -> authors.put(v.getId(), v.getFirstName() + " " + v.getLastname()));
-        System.out.println("ID\tAuthor full name");
+        System.out.println(AUTHOR_HEADER);
         authors.forEach((id, fullName) -> System.out.println(id + "\t" + fullName));
     }
 
-    @Override
-    public void printAuthor() {
-        var answer = userAskService.askUser("Enter author id...");
-        if (answer.equals("exit")) {
-            return;
-        }
-        try {
-            var id = Long.parseLong(answer);
-            var author = authorService.getById(id);
-            System.out.println("ID\tAuthor full name\n"
-                    + author.getId() + "\t" + author.getFirstName() + " " + author.getLastname());
-        } catch (Exception ex) {
-            System.out.println("Enter a valid author id!");
-            printAuthor();
-        }
-    }
 }
