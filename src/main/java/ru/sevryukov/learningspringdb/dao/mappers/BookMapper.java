@@ -11,12 +11,11 @@ import java.util.Map;
 
 public class BookMapper implements RowMapper<Book> {
 
-    public static Map<String, Object> getMapFromBook(BookEntity author) {
+    public static Map<String, Object> getMapFromBook(BookEntity bookEntity) {
         return Map.of(
-                "id", author.getId(),
-                "name", author.getBookName(),
-                "author_id", author.getAuthorId(),
-                "genre_id", author.getGenreId()
+                "name", bookEntity.getBookName(),
+                "author_ids", bookEntity.getAuthorIds().toArray(),
+                "genre_ids", bookEntity.getGenreIds().toArray()
         );
     }
 

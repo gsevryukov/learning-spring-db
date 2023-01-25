@@ -1,7 +1,5 @@
 package ru.sevryukov.learningspringdb.dao.mappers;
 
-//public class AuthorMapper {
-
 import org.springframework.jdbc.core.RowMapper;
 import ru.sevryukov.learningspringdb.model.Author;
 

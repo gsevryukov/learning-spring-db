@@ -9,6 +9,8 @@ public interface BookDao {
 
     void insert(BookEntity bookEntity);
 
+    Book getById(long id);
+
     List<Book> getAll();
 
     void deleteById(long id);

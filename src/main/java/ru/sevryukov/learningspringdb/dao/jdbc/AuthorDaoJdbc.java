@@ -20,7 +20,7 @@ public class AuthorDaoJdbc implements AuthorDao {
     @Override
     public void insert(Author author) {
         var map = AuthorMapper.getMapFromAuthor(author);
-        var sql = "insert into author (id, first_name, last_name) values (:id, :first_name, :last_name)";
+        var sql = "insert into author (first_name, last_name) values (:first_name, :last_name)";
         namedParameterJdbcOperations.update(sql, map);
     }
 
