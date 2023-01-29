@@ -37,6 +37,13 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
+    public List<Genre> getAllByIds(List<Long> ids) {
+        var params = Map.of("ids", ids.toArray());
+        var sql = "select id, \"name\" from genre where id = any(:ids)";
+        return namedParameterJdbcOperations.query(sql, params, new GenreMapper());
+    }
+
+    @Override
     public void deleteById(long id) {
         var params = Map.of("id", id);
         namedParameterJdbcOperations.update("delete from genre where id = :id", params);

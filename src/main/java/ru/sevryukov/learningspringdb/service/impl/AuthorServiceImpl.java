@@ -33,4 +33,9 @@ public class AuthorServiceImpl implements AuthorService {
     public List<Author> getAll() {
         return authorRepo.getAll();
     }
+
+    @Override
+    public List<Author> getAllByIds(List<Long> ids) {
+        return authorRepo.getAllByIds(ids);
+    }
 }

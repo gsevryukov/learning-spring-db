@@ -11,6 +11,7 @@ public interface GenreDao {
     Genre getById(long id);
 
     List<Genre> getAll();
+    List<Genre> getAllByIds(List<Long> ids);
 
     void deleteById(long id);
 }

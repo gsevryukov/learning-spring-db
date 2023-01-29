@@ -30,6 +30,11 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    public List<Genre> getAllByIds(List<Long> ids) {
+        return genreRepo.getAllByIds(ids);
+    }
+
+    @Override
     public void deleteGenre(long id) {
         genreRepo.deleteById(id);
     }

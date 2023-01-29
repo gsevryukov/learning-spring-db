@@ -24,16 +24,23 @@ public class AuthorDaoJdbc implements AuthorDao {
     }
 
     @Override
+    public Author getById(long id) {
+        var params = Map.of("id", id);
+        var sql = "select id, first_name, last_name from author where id = :id";
+        return namedParametersJdbcTemplate.queryForObject(sql, params, new AuthorMapper());
+    }
+
+    @Override
     public List<Author> getAll() {
         var sql = "select id, first_name, last_name from author";
         return namedParametersJdbcTemplate.query(sql, new AuthorMapper());
     }
 
     @Override
-    public Author getById(long id) {
-        var params = Map.of("id", id);
-        var sql = "select id, first_name, last_name from author where id = :id";
-        return namedParametersJdbcTemplate.queryForObject(sql, params, new AuthorMapper());
+    public List<Author> getAllByIds(List<Long> ids) {
+        var params = Map.of("ids", ids.toArray());
+        var sql = "select id, first_name, last_name from author where id = any(:ids)";
+        return namedParametersJdbcTemplate.query(sql, params, new AuthorMapper());
     }
 
     @Override

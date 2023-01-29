@@ -13,4 +13,6 @@ public interface AuthorService {
     Author getById(long id);
 
     List<Author> getAll();
+
+    List<Author> getAllByIds(List<Long> ids);
 }

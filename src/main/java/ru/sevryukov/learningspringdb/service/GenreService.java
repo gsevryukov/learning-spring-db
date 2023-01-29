@@ -12,5 +12,7 @@ public interface GenreService {
 
     List<Genre> getAll();
 
+    List<Genre> getAllByIds(List<Long> ids);
+
     void deleteGenre(long id);
 }

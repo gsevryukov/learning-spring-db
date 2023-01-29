@@ -6,8 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import ru.sevryukov.learningspringdb.dao.jdbc.AuthorDaoJdbc;
 import ru.sevryukov.learningspringdb.dao.jdbc.BookDaoJdbc;
+import ru.sevryukov.learningspringdb.dao.jdbc.GenreDaoJdbc;
+import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
 import ru.sevryukov.learningspringdb.model.BookEntity;
+import ru.sevryukov.learningspringdb.service.impl.AuthorServiceImpl;
+import ru.sevryukov.learningspringdb.service.impl.GenreServiceImpl;
 
 import java.util.List;
 
@@ -25,7 +30,10 @@ class BookDaoJdbcTest {
 
     @BeforeEach
     void init() {
-        bookDaoJdbc = new BookDaoJdbc(jdbcTemplate);
+        var genreService = new GenreServiceImpl(new GenreDaoJdbc(jdbcTemplate));
+        var authorService = new AuthorServiceImpl(new AuthorDaoJdbc(jdbcTemplate));
+        var bookMapper = new BookMapper(genreService, authorService);
+        bookDaoJdbc = new BookDaoJdbc(jdbcTemplate, bookMapper);
     }
 
     @Test

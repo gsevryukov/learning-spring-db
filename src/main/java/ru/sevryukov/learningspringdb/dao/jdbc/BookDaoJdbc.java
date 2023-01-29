@@ -17,11 +17,9 @@ public class BookDaoJdbc implements BookDao {
 
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
 
-    private static final String BASE_SELECT = "select b.id, " +
-            "b.\"name\" as book_name, " +
-            "(select array(select concat(a.first_name, ' ', a.last_name) from author a)) as full_names, " +
-            "(select array(select g.\"name\" from genre g)) as genre_names " +
-            "from book b ";
+    private final BookMapper bookMapper;
+
+    private static final String BASE_SELECT = "select id, \"name\", author_ids, genre_ids from book b ";
 
     @Override
     public void insert(BookEntity bookEntity) {
@@ -34,12 +32,12 @@ public class BookDaoJdbc implements BookDao {
     public Book getById(long id) {
         var params = Map.of("id", id);
         var sql = BASE_SELECT + "where b.id = :id";
-        return namedParameterJdbcOperations.queryForObject(sql, params, new BookMapper());
+        return namedParameterJdbcOperations.queryForObject(sql, params, bookMapper);
     }
 
     @Override
     public List<Book> getAll() {
-        return namedParameterJdbcOperations.query(BASE_SELECT, new BookMapper());
+        return namedParameterJdbcOperations.query(BASE_SELECT, bookMapper);
     }
 
     @Override
