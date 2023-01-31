@@ -1,11 +1,10 @@
 package ru.sevryukov.learningspringdb.dao.jdbc;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.sevryukov.learningspringdb.dao.BookDao;
 import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
-import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.BookEntity;
 
 import java.util.List;
@@ -15,29 +14,33 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class BookDaoJdbc implements BookDao {
 
-    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final BookMapper bookMapper;
 
     private static final String BASE_SELECT = "select id, \"name\", author_ids, genre_ids from book b ";
 
     @Override
-    public void insert(BookEntity bookEntity) {
-        var params = BookMapper.getMapFromBook(bookEntity);
+    public void insert(String name, List<Long> authorIds, List<Long> genreIds) {
+        var params = Map.of(
+                "name", name,
+                "author_ids", authorIds.toArray(),
+                "genre_ids", genreIds.toArray()
+        );
         var sql = "insert into book(\"name\", author_ids, genre_ids) values (:name, :author_ids, :genre_ids)";
-        namedParameterJdbcOperations.update(sql, params);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     @Override
-    public Book getById(long id) {
+    public BookEntity getById(long id) {
         var params = Map.of("id", id);
         var sql = BASE_SELECT + "where b.id = :id";
-        return namedParameterJdbcOperations.queryForObject(sql, params, bookMapper);
+        return namedParameterJdbcTemplate.queryForObject(sql, params, bookMapper);
     }
 
     @Override
-    public List<Book> getAll() {
-        return namedParameterJdbcOperations.query(BASE_SELECT, bookMapper);
+    public List<BookEntity> getAll() {
+        return namedParameterJdbcTemplate.query(BASE_SELECT, bookMapper);
     }
 
     @Override
@@ -53,13 +56,13 @@ public class BookDaoJdbc implements BookDao {
                 "author_ids = :author_ids, " +
                 "genre_ids = :genre_ids" +
                 " where id = :id";
-        namedParameterJdbcOperations.update(sql, params);
+        namedParameterJdbcTemplate.update(sql, params);
     }
 
     @Override
     public void deleteById(long id) {
         var params = Map.of("id", id);
-        namedParameterJdbcOperations.update("delete from book where id = :id", params);
+        namedParameterJdbcTemplate.update("delete from book where id = :id", params);
     }
 
 }

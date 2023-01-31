@@ -1,17 +1,16 @@
 package ru.sevryukov.learningspringdb.dao;
 
-import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.BookEntity;
 
 import java.util.List;
 
 public interface BookDao {
 
-    void insert(BookEntity bookEntity);
+    void insert(String name, List<Long> authorIds, List<Long> genreIds);
 
-    Book getById(long id);
+    BookEntity getById(long id);
 
-    List<Book> getAll();
+    List<BookEntity> getAll();
 
     void editBook(long id, String name, List<Long> authorIds, List<Long> genreIds);
 
