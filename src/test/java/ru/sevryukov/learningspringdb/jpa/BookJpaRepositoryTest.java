@@ -1,6 +1,7 @@
-package ru.sevryukov.learningspringdb.dao;
+package ru.sevryukov.learningspringdb.jpa;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.BookRepository;
-import ru.sevryukov.learningspringdb.repository.impl.BookRepositoryJpa;
+import ru.sevryukov.learningspringdb.repository.GenreRepository;
+import ru.sevryukov.learningspringdb.repository.jpa.BookRepositoryJpa;
+import ru.sevryukov.learningspringdb.repository.jpa.GenreRepositoryJpa;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,11 +27,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "/test-data.sql"
 })
 @DataJpaTest
-@Import(BookRepositoryJpa.class)
+@Import({BookRepositoryJpa.class, GenreRepositoryJpa.class})
 class BookJpaRepositoryTest {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    GenreRepository genreRepository;
 
     @ParameterizedTest
     @MethodSource("getNewBook")
@@ -72,6 +78,12 @@ class BookJpaRepositoryTest {
         bookRepository.deleteById(defaultBook.getId());
         var all = bookRepository.findAll();
         assertEquals(0, all.size());
+    }
+
+    @Test
+    void getAllByIdsTest() {
+        var all = genreRepository.findAllByIds(List.of(100L, 101L));
+        assertEquals(2, all.size());
     }
 
     private static Stream<Book> getDefaultBook() {

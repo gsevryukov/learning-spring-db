@@ -1,4 +1,4 @@
-package ru.sevryukov.learningspringdb.repository.impl;
+package ru.sevryukov.learningspringdb.repository.jpa;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,6 +20,7 @@ public class BookRepositoryJpa implements BookRepository {
     private final EntityManager manager;
 
     @Override
+    @Transactional
     public Book save(Book book) {
         if (book.getId() <= 0) {
             manager.persist(book);
@@ -36,6 +37,7 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
+    @Transactional
     public List<Book> findAll() {
         var query = manager.createQuery("select b from Book b", Book.class);
         return query.getResultList();
@@ -53,6 +55,7 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         Query query = manager.createQuery("delete " +
                 "from Book b " +

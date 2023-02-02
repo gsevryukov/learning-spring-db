@@ -11,7 +11,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import ru.sevryukov.learningspringdb.dao.jdbc.BookDaoJdbc;
 import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
 import ru.sevryukov.learningspringdb.repository.BookRepository;
-import ru.sevryukov.learningspringdb.repository.impl.BookRepositoryJpa;
+import ru.sevryukov.learningspringdb.repository.jpa.BookRepositoryJpa;
 import ru.sevryukov.learningspringdb.service.AuthorService;
 import ru.sevryukov.learningspringdb.service.BookService;
 import ru.sevryukov.learningspringdb.service.GenreService;

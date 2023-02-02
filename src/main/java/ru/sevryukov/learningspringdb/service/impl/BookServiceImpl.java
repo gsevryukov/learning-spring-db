@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sevryukov.learningspringdb.dao.jdbc.BookDaoJdbc;
 import ru.sevryukov.learningspringdb.model.Book;
+import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
 
 import java.util.List;
@@ -13,9 +14,11 @@ import java.util.List;
 public class BookServiceImpl implements BookService {
 
     private final BookDaoJdbc bookRepo;
+//    private final GenreRepository genreRepository;
 
     @Override
     public void addBook(String bookName, List<Long> authorIds, List<Long> genreIds) {
+//        var genres = genreRepository.findAllByIds(genreIds);
         bookRepo.insert(bookName, authorIds, genreIds);
     }
 
