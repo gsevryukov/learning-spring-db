@@ -18,7 +18,7 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public void insert(String name) {
-        var params = Map.of("name", name);
+        var params = Map.of("naming", name);
         var sql = "insert into genre (\"name\") values (:name)";
         namedParameterJdbcTemplate.update(sql, params);
     }

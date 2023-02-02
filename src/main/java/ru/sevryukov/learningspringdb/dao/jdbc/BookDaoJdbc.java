@@ -28,7 +28,7 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public void insert(String name, List<Long> authorIds, List<Long> genreIds) {
         var params = Map.of(
-                "name", name,
+                "naming", name,
                 "author_ids", authorIds.toArray(),
                 "genre_ids", genreIds.toArray()
         );
@@ -52,7 +52,7 @@ public class BookDaoJdbc implements BookDao {
     public void editBook(long id, String name, List<Long> authorIds, List<Long> genreIds) {
         var params = Map.of(
                 "id", id,
-                "name", name,
+                "naming", name,
                 "author_ids", authorIds.toArray(),
                 "genre_ids", genreIds.toArray()
         );

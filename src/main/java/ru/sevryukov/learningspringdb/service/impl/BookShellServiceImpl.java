@@ -111,9 +111,9 @@ public class BookShellServiceImpl implements BookShellService {
                 "\t" +
                 book.getName() +
                 "\t" +
-                Arrays.toString(book.getAuthorNames().toArray()) +
-                "\t" +
-                Arrays.toString(book.getGenreNames().toArray());
+//                Arrays.toString(book.getAuthorNames().toArray()) +?
+                "\t";
+//                Arrays.toString(book.getGenreNames().toArray());
     }
 
     private List<Long> getEnteredIds(List<Long> validIds, String type) {

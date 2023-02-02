@@ -18,10 +18,10 @@ public class BookMapper implements RowMapper<Book> {
     @Override
     public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
         long id = rs.getLong("id");
-        var bookName = rs.getString("name");
+        var bookName = rs.getString("naming");
         var genreIdStr = rs.getArray("genre_names");
         var authorIdStr = rs.getArray("author_names");
-        return new Book(id, bookName, getNamesFromStr(authorIdStr), getNamesFromStr(genreIdStr));
+        return new Book(id, bookName, List.of(), List.of());
     }
 
     private List<String> getNamesFromStr(Array listStr) {
