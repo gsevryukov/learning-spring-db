@@ -14,8 +14,6 @@ public class BookServiceImpl implements BookService {
 
     private final BookDaoJdbc bookRepo;
 
-    private final BookConverter bookConverter;
-
     @Override
     public void addBook(String bookName, List<Long> authorIds, List<Long> genreIds) {
         bookRepo.insert(bookName, authorIds, genreIds);
@@ -23,14 +21,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getById(long id) {
-        var bookEnt = bookRepo.getById(id);
-        return bookConverter.getBookFromBookEntity(bookEnt);
+        return bookRepo.getById(id);
     }
 
     @Override
     public List<Book> getAll() {
-        var entities = bookRepo.getAll();
-        return entities.stream().map(bookConverter::getBookFromBookEntity).toList();
+        return bookRepo.getAll();
 
     }
 

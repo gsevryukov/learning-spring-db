@@ -12,7 +12,6 @@ import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
 import ru.sevryukov.learningspringdb.service.AuthorService;
 import ru.sevryukov.learningspringdb.service.BookService;
 import ru.sevryukov.learningspringdb.service.GenreService;
-import ru.sevryukov.learningspringdb.service.impl.BookConverter;
 import ru.sevryukov.learningspringdb.service.impl.BookServiceImpl;
 
 import javax.sql.DataSource;
@@ -43,17 +42,12 @@ public class TestConfig {
 
     @Bean
     public BookService bookService() {
-        return new BookServiceImpl(bookDaoJdbc(), bookConverter());
+        return new BookServiceImpl(bookDaoJdbc());
     }
 
     @Bean
     public BookMapper bookMapper() {
         return new BookMapper();
-    }
-
-    @Bean
-    public BookConverter bookConverter() {
-        return new BookConverter(genreService, authorService);
     }
 
     @Bean

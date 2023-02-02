@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.sevryukov.learningspringdb.dao.BookDao;
 import ru.sevryukov.learningspringdb.dao.mappers.BookMapper;
-import ru.sevryukov.learningspringdb.model.BookEntity;
+import ru.sevryukov.learningspringdb.model.Book;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,12 @@ public class BookDaoJdbc implements BookDao {
 
     private final BookMapper bookMapper;
 
-    private static final String BASE_SELECT = "select id, \"name\", author_ids, genre_ids from book b ";
+    private static final String BASE_SELECT = "select b.id, b.\"name\", " +
+            "array_agg(distinct concat(a.first_name, ' ', a.last_name)) as author_names, " +
+            "array_agg(distinct concat(g.\"name\", '')) as genre_names " +
+            "from book b " +
+            "join genre g on array_contains(b.genre_ids, g.id) " +
+            "join author a on array_contains(b.author_ids, a.id)";
 
     @Override
     public void insert(String name, List<Long> authorIds, List<Long> genreIds) {
@@ -32,15 +37,15 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public BookEntity getById(long id) {
+    public Book getById(long id) {
         var params = Map.of("id", id);
-        var sql = BASE_SELECT + "where b.id = :id";
+        var sql = BASE_SELECT + " where b.id = :id group by b.id";
         return namedParameterJdbcTemplate.queryForObject(sql, params, bookMapper);
     }
 
     @Override
-    public List<BookEntity> getAll() {
-        return namedParameterJdbcTemplate.query(BASE_SELECT, bookMapper);
+    public List<Book> getAll() {
+        return namedParameterJdbcTemplate.query(BASE_SELECT + " group by b.id", bookMapper);
     }
 
     @Override

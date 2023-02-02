@@ -22,7 +22,7 @@ class BookServiceTest {
     @Test
     void addBook() {
         var newName = "Кот в сапогах";
-        bookService.addBook(newName, List.of(), List.of());
+        bookService.addBook(newName, List.of(100L), List.of(101L));
         var b = bookService.getById(1);
         assertEquals(1, b.getId());
         assertEquals(newName, b.getName());
@@ -46,12 +46,12 @@ class BookServiceTest {
     @Test
     void editBook() {
         var newName = "Новое название";
-        bookService.editBook(100, newName, List.of(), List.of());
+        bookService.editBook(100, newName, List.of(100L), List.of(100L, 101L));
         var edited = bookService.getById(100);
         assertNotNull(edited);
         assertEquals(newName, edited.getName());
-        assertEquals(0, edited.getAuthorNames().size());
-        assertEquals(0, edited.getGenreNames().size());
+        assertEquals(1, edited.getAuthorNames().size());
+        assertEquals(2, edited.getGenreNames().size());
     }
 
     @Test

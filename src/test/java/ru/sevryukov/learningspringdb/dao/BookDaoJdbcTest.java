@@ -24,18 +24,18 @@ class BookDaoJdbcTest {
     @Test
     void insertBookTest() {
         var newName = "Преступление и наказание";
-        bookDaoJdbc.insert(newName, List.of(1L), List.of(1L));
+        bookDaoJdbc.insert(newName, List.of(100L), List.of(100L));
         var all = bookDaoJdbc.getAll();
         assertEquals(2, all.size());
-        assertEquals(newName, all.get(0).getBookName());
+        assertEquals(newName, all.get(0).getName());
     }
 
     @Test
     void getByIdTest() {
         var book = bookDaoJdbc.getById(100);
         assertNotNull(book);
-        assertEquals(1, book.getAuthorIds().size());
-        assertEquals(2, book.getGenreIds().size());
+        assertEquals(1, book.getAuthorNames().size());
+        assertEquals(2, book.getGenreNames().size());
     }
 
     @Test
@@ -48,12 +48,12 @@ class BookDaoJdbcTest {
     @Test
     void editBookTest() {
         var newName = "Какое-то странное название";
-        bookDaoJdbc.editBook(100, newName, List.of(), List.of());
+        bookDaoJdbc.editBook(100, newName, List.of(100L), List.of(100L, 101L));
         var bookEdited = bookDaoJdbc.getById(100);
         assertNotNull(bookEdited);
-        assertEquals(newName, bookEdited.getBookName());
-        assertEquals(0, bookEdited.getAuthorIds().size());
-        assertEquals(0, bookEdited.getGenreIds().size());
+        assertEquals(newName, bookEdited.getName());
+        assertEquals(1, bookEdited.getAuthorNames().size());
+        assertEquals(2, bookEdited.getGenreNames().size());
     }
 
     @Test
