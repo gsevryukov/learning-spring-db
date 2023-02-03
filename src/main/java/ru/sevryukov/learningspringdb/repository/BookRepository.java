@@ -1,8 +1,6 @@
 package ru.sevryukov.learningspringdb.repository;
 
-import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
-import ru.sevryukov.learningspringdb.model.Genre;
 
 import java.util.List;
 import java.util.Optional;

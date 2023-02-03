@@ -7,7 +7,6 @@ import ru.sevryukov.learningspringdb.repository.BookRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -57,7 +56,7 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     @Transactional
     public void deleteById(long id) {
-        Query query = manager.createQuery("delete " +
+        var query = manager.createQuery("delete " +
                 "from Book b " +
                 "where b.id = :id");
         query.setParameter("id", id);

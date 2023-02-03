@@ -2,40 +2,38 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.sevryukov.learningspringdb.dao.jdbc.BookDaoJdbc;
 import ru.sevryukov.learningspringdb.model.Book;
-import ru.sevryukov.learningspringdb.repository.GenreRepository;
+import ru.sevryukov.learningspringdb.repository.BookRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private final BookDaoJdbc bookRepo;
-//    private final GenreRepository genreRepository;
+    private final BookRepository bookRepo;
 
     @Override
-    public void addBook(String bookName, List<Long> authorIds, List<Long> genreIds) {
-//        var genres = genreRepository.findAllByIds(genreIds);
-        bookRepo.insert(bookName, authorIds, genreIds);
+    public Book saveBook(Book book) {
+        return bookRepo.save(book);
     }
 
     @Override
     public Book getById(long id) {
-        return bookRepo.getById(id);
+        return Optional.of(bookRepo.findById(id)).get().orElse(null);
     }
 
     @Override
     public List<Book> getAll() {
-        return bookRepo.getAll();
+        return bookRepo.findAll();
 
     }
 
     @Override
-    public void editBook(long id, String bookName, List<Long> authorIds, List<Long> genreIds) {
-        bookRepo.editBook(id, bookName, authorIds, genreIds);
+    public void editBook(long id, String bookName) {
+        bookRepo.updateById(id, bookName);
     }
 
     @Override

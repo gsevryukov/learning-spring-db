@@ -3,18 +3,18 @@ spring:
     url: jdbc:h2:mem:testdb
   sql:
     init:
-      mode: never
-#      data-locations: test-data.sql
-#      schema-locations: schema.sql
+      mode: always
+      data-locations: test-data.sql
+      schema-locations: schema.sql
   h2:
     console:
       path: /h2-console
       settings:
         web-allow-others: true
   jpa:
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
     properties:
       hibernate:

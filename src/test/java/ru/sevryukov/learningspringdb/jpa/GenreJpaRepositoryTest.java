@@ -1,10 +1,10 @@
 package ru.sevryukov.learningspringdb.jpa;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.repository.jpa.GenreRepositoryJpa;
@@ -13,10 +13,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Sql(scripts = {
-        "/schema.sql",
-        "/test-data.sql"
-})
 @DataJpaTest
 @Import(GenreRepositoryJpa.class)
 class GenreJpaRepositoryTest {
@@ -25,6 +21,7 @@ class GenreJpaRepositoryTest {
     GenreRepository genreRepository;
 
     @Test
+    @DisplayName("Проверка сохранения жанра")
     void saveTest() {
         var g1 = new Genre(0, "Детектив");
         var g2 = new Genre(0, "Фантастика");
@@ -36,6 +33,7 @@ class GenreJpaRepositoryTest {
     }
 
     @Test
+    @DisplayName("Проверка получения жанров по идентификаторам")
     void getAllByIdsTest() {
         var all = genreRepository.findAllByIds(List.of(100L, 101L));
         assertEquals(2, all.size());

@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.Genre;
@@ -22,10 +21,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@Sql(scripts = {
-        "/schema.sql",
-        "/test-data.sql"
-})
 @DataJpaTest
 @Import({BookRepositoryJpa.class, GenreRepositoryJpa.class})
 class BookJpaRepositoryTest {
@@ -92,13 +87,13 @@ class BookJpaRepositoryTest {
                 new Genre(100, "Образовательная книга"),
                 new Genre(101, "Художественная книга")
         );
-        return Stream.of(new Book(100, "Педагогическая поэма", authors, genres));
+        return Stream.of(new Book(100, "Педагогическая поэма", null, authors, genres));
     }
 
     private static Stream<Book> getNewBook() {
         var authors = List.of(new Author(1, "Фёдор", "Достоевский"));
         var genres = List.of(new Genre(1, "Классическая литература"));
-        var newBook = new Book(1, "Преступление и наказание", authors, genres);
+        var newBook = new Book(0, "Преступление и наказание", null, authors, genres);
         return Stream.of(newBook);
     }
 

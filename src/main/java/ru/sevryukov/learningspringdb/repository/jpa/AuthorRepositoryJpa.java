@@ -3,12 +3,10 @@ package ru.sevryukov.learningspringdb.repository.jpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.sevryukov.learningspringdb.model.Author;
-import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.AuthorRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +43,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
+    @Transactional
     public List<Author> findAllByIds(List<Long> ids) {
         var query = manager.createQuery("select a from Author a where a.id in :ids", Author.class);
         query.setParameter("ids", ids);
@@ -67,7 +66,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     @Override
     @Transactional
     public void deleteById(long id) {
-        Query query = manager.createQuery("delete " +
+        var query = manager.createQuery("delete " +
                 "from Author a " +
                 "where a.id = :id");
         query.setParameter("id", id);

@@ -7,7 +7,6 @@ import ru.sevryukov.learningspringdb.repository.GenreRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +43,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     }
 
     @Override
+    @Transactional
     public List<Genre> findAllByIds(List<Long> ids) {
         var query = manager.createQuery("select g from Genre g where g.id in :ids", Genre.class);
         query.setParameter("ids", ids);
@@ -64,7 +64,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     @Override
     @Transactional
     public void deleteById(long id) {
-        Query query = manager.createQuery("delete " +
+        var query = manager.createQuery("delete " +
                 "from Genre g " +
                 "where g.id = :id");
         query.setParameter("id", id);
