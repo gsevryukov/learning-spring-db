@@ -6,6 +6,7 @@ import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.repository.BookRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +34,25 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void editBook(long id, String bookName) {
-        bookRepo.updateById(id, bookName);
+        bookRepo.findById(id).ifPresentOrElse(
+                book -> {
+                    book.setName(bookName);
+                    bookRepo.save(book);
+                },
+                () -> getException(id)
+        );
     }
 
     @Override
     public void deleteBook(long id) {
-        bookRepo.deleteById(id);
+        bookRepo.findById(id).ifPresentOrElse(
+                bookRepo::removeBook,
+                () -> getException(id)
+        );
+    }
+
+    private void getException(long id) {
+        throw new EntityNotFoundException("No book found with id: " + id);
     }
 
 }

@@ -6,6 +6,7 @@ import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.repository.AuthorRepository;
 import ru.sevryukov.learningspringdb.service.AuthorService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,11 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void deleteAuthor(long id) {
-        authorRepo.deleteById(id);
+        authorRepo.findById(id).ifPresentOrElse(
+                authorRepo::removeAuthor,
+                () -> {
+                    throw new EntityNotFoundException("No author with this id: " + id);
+                }
+        );
     }
 }

@@ -15,6 +15,7 @@ import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.repository.jpa.BookRepositoryJpa;
 import ru.sevryukov.learningspringdb.repository.jpa.GenreRepositoryJpa;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -30,6 +31,9 @@ class BookJpaRepositoryTest {
 
     @Autowired
     GenreRepository genreRepository;
+
+    @Autowired
+    EntityManager manager;
 
     @ParameterizedTest
     @MethodSource("getNewBook")
@@ -61,7 +65,7 @@ class BookJpaRepositoryTest {
     @MethodSource("getDefaultBook")
     @DisplayName("Проверка изменения названия книги")
     void updateByIdTest(Book defaultBook) {
-        bookRepository.updateById(defaultBook.getId(), "Честь");
+        defaultBook.setName("Честь");
         var updated = bookRepository.findById(defaultBook.getId());
         assertThat(updated).isPresent().get().isNotEqualTo(defaultBook);
     }
@@ -70,7 +74,8 @@ class BookJpaRepositoryTest {
     @MethodSource("getDefaultBook")
     @DisplayName("Проверка удаления книги")
     void deleteByIdTest(Book defaultBook) {
-        bookRepository.deleteById(defaultBook.getId());
+        var ent = bookRepository.findById(defaultBook.getId()).get();
+        bookRepository.removeBook(ent);
         var all = bookRepository.findAll();
         assertEquals(0, all.size());
     }

@@ -13,6 +13,7 @@ import ru.sevryukov.learningspringdb.service.CommentService;
 import ru.sevryukov.learningspringdb.service.GenreService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +36,7 @@ public class BookShellServiceImpl implements BookShellService {
     private final CommentService commentService;
 
     @Override
+    @Transactional
     public void addBook() {
         var bookName = userAskService.askUser("Enter book name");
 
@@ -89,6 +91,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
+    @Transactional
     public void editBook() {
         printAllBooks();
         var answer = userAskService.askUser("\nEnter book id to edit:");
@@ -103,6 +106,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
+    @Transactional
     public void removeBook() {
         printAllBooks();
         var answer = userAskService.askUser("\nEnter book id to remove:");
@@ -117,6 +121,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
+    @Transactional
     public void addBookComment() {
         var booksWithNoComment = bookService.getAll().stream().filter(b -> b.getComment() == null).toList();
         if (booksWithNoComment.isEmpty()) {
@@ -134,6 +139,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
+    @Transactional
     public void editBookComment() {
         var booksWithComment = bookService.getAll().stream().filter(b -> b.getComment() != null).toList();
         if (booksWithComment.isEmpty()) {
@@ -151,6 +157,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
+    @Transactional
     public void removeBookComment() {
         var booksWithComment = bookService.getAll().stream().filter(b -> b.getComment() != null).toList();
         if (booksWithComment.isEmpty()) {

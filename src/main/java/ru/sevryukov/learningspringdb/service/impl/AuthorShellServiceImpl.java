@@ -6,6 +6,7 @@ import ru.sevryukov.learningspringdb.service.AuthorService;
 import ru.sevryukov.learningspringdb.service.AuthorShellService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 
 @Service
@@ -19,6 +20,7 @@ public class AuthorShellServiceImpl implements AuthorShellService {
     private static final String MSG_TEMPLATE = "Enter author %s name...";
 
     @Override
+    @Transactional
     public void addAuthor() {
         var firstName = userAskService.askUser(String.format(MSG_TEMPLATE, "first"));
         var lastName = userAskService.askUser(String.format(MSG_TEMPLATE, "last"));
@@ -48,6 +50,7 @@ public class AuthorShellServiceImpl implements AuthorShellService {
     }
 
     @Override
+    @Transactional
     public void removeAuthor() {
         printAuthors();
         var answer = userAskService.askUser("\nEnter author id to remove:");

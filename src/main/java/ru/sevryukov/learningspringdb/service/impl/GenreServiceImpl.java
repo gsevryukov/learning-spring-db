@@ -6,6 +6,7 @@ import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.GenreService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +37,14 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void deleteGenre(long id) {
-        genreRepo.deleteById(id);
+    public void deleteById(long id) {
+        genreRepo.findById(id).ifPresentOrElse(
+                genreRepo::removeGenre,
+                () -> {
+                    throw new EntityNotFoundException("No genre found with id: " + id);
+                }
+        );
+
     }
 
 }

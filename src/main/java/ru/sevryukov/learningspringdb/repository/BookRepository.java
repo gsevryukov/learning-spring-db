@@ -13,7 +13,5 @@ public interface BookRepository {
 
     List<Book> findAll();
 
-    void updateById(long id, String name);
-
-    void deleteById(long id);
+    void removeBook(Book book);
 }

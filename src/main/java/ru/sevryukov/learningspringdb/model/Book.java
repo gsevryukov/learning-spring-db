@@ -16,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -35,21 +37,21 @@ public class Book {
     @Column(name = "\"name\"")
     private String name;
 
-    @OneToOne(targetEntity = Comment.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
+    @ManyToOne(targetEntity = Comment.class, cascade = CascadeType.ALL)
     private Comment comment;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    @OneToMany(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Author> authors;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @OneToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Genre> genres;
 }
