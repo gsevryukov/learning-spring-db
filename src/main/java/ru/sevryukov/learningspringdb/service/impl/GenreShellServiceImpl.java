@@ -6,8 +6,6 @@ import ru.sevryukov.learningspringdb.service.GenreService;
 import ru.sevryukov.learningspringdb.service.GenreShellService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
 
-import javax.transaction.Transactional;
-
 @Service
 @RequiredArgsConstructor
 public class GenreShellServiceImpl implements GenreShellService {
@@ -18,7 +16,6 @@ public class GenreShellServiceImpl implements GenreShellService {
     private final GenreService genreService;
 
     @Override
-    @Transactional
     public void addGenre() {
         var name = userAskService.askUser("Enter genre name...");
         genreService.addGenre(name);
@@ -47,7 +44,6 @@ public class GenreShellServiceImpl implements GenreShellService {
     }
 
     @Override
-    @Transactional
     public void removeGenre() {
         printGenres();
         var answer = userAskService.askUser("\nEnter genre id to remove:");

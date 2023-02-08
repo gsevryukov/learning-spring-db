@@ -15,6 +15,16 @@ public class CommentRepositoryJpa implements CommentRepository {
     private final EntityManager manager;
 
     @Override
+    public Comment save(Comment comment) {
+        if (comment.getId() <= 0) {
+            manager.persist(comment);
+            return comment;
+        } else {
+            return manager.merge(comment);
+        }
+    }
+
+    @Override
     public Optional<Comment> findById(long id) {
         return Optional.ofNullable(manager.find(Comment.class, id));
     }

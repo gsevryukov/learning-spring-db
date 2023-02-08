@@ -2,6 +2,7 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.repository.BookRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
@@ -17,6 +18,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepo;
 
     @Override
+    @Transactional
     public Book saveBook(Book book) {
         return bookRepo.save(book);
     }
@@ -33,6 +35,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void editBook(long id, String bookName) {
         bookRepo.findById(id).ifPresentOrElse(
                 book -> {
@@ -44,6 +47,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteBook(long id) {
         bookRepo.findById(id).ifPresentOrElse(
                 bookRepo::removeBook,

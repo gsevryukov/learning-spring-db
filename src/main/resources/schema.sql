@@ -30,9 +30,8 @@ create table comment
 drop table if exists book;
 create table book
 (
-    id         bigserial not null,
-    "name"     varchar   not null,
-    comment_id bigint references comment (id),
+    id     bigserial not null,
+    "name" varchar   not null,
     primary key (id)
 );
 -- book_author
@@ -48,4 +47,10 @@ create table book_genre
     book_id  bigint references book (id)  not null,
     genre_id bigint references genre (id) not null,
     primary key (book_id, genre_id)
+);-- book_comment
+create table book_comment
+(
+    book_id    bigint references book (id)    not null,
+    comment_id bigint references comment (id) not null,
+    primary key (book_id, comment_id)
 );

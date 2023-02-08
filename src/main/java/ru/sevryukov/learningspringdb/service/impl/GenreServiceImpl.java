@@ -2,6 +2,7 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.GenreService;
@@ -17,6 +18,7 @@ public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepo;
 
     @Override
+    @Transactional
     public void addGenre(String name) {
         genreRepo.save(new Genre(0, name));
     }
@@ -37,6 +39,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         genreRepo.findById(id).ifPresentOrElse(
                 genreRepo::removeGenre,

@@ -17,7 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -35,9 +35,12 @@ public class Book {
     @Column(name = "\"name\"")
     private String name;
 
-    @JoinColumn(name = "comment_id")
-    @ManyToOne(targetEntity = Comment.class, cascade = CascadeType.ALL)
-    private Comment comment;
+    @BatchSize(size = 5)
+    @Fetch(FetchMode.SELECT)
+    @JoinTable(name = "book_comment", joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "comment_id"))
+    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Comment> comments;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
