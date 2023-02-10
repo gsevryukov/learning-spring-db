@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
@@ -15,7 +16,6 @@ import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.repository.jpa.BookRepositoryJpa;
 import ru.sevryukov.learningspringdb.repository.jpa.GenreRepositoryJpa;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,7 +33,7 @@ class BookJpaRepositoryTest {
     GenreRepository genreRepository;
 
     @Autowired
-    EntityManager manager;
+    TestEntityManager manager;
 
     @ParameterizedTest
     @MethodSource("getNewBook")
