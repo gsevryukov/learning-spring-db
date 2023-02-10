@@ -39,20 +39,20 @@ public class Book {
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_comment", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"))
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Comment> comments;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Author> authors;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Genre> genres;
 }

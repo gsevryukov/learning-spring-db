@@ -92,13 +92,13 @@ class BookJpaRepositoryTest {
                 new Genre(100, "Образовательная книга"),
                 new Genre(101, "Художественная книга")
         );
-        return Stream.of(new Book(100, "Педагогическая поэма", null, authors, genres));
+        return Stream.of(new Book(100, "Педагогическая поэма", List.of(), authors, genres));
     }
 
     private static Stream<Book> getNewBook() {
         var authors = List.of(new Author(1, "Фёдор", "Достоевский"));
         var genres = List.of(new Genre(1, "Классическая литература"));
-        var newBook = new Book(0, "Преступление и наказание", null, authors, genres);
+        var newBook = new Book(0, "Преступление и наказание", List.of(), authors, genres);
         return Stream.of(newBook);
     }
 

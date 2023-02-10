@@ -111,6 +111,54 @@ public class EntityServiceImpl implements EntityService {
         commentService.deleteComment(commentId);
     }
 
+    @Override
+    @Transactional
+    public void addAuthor(String firstName, String lastName) {
+        authorService.addAuthor(firstName, lastName);
+    }
+
+    @Override
+    public Author getAuthorById(String enteredId) {
+        long id = Long.parseLong(enteredId);
+        return authorService.getById(id);
+    }
+
+    @Override
+    public List<Author> getAllAuthors() {
+        return authorService.getAll();
+    }
+
+    @Override
+    @Transactional
+    public void removeAuthor(String enteredId) {
+        long id = Long.parseLong(enteredId);
+        authorService.deleteAuthor(id);
+    }
+
+    @Override
+    @Transactional
+    public void addGenre(String name) {
+        genreService.addGenre(name);
+    }
+
+    @Override
+    public Genre getGenreById(String enteredId) {
+        long id = Long.parseLong(enteredId);
+        return genreService.getById(id);
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        return genreService.getAll();
+    }
+
+    @Override
+    @Transactional
+    public void removeGenre(String enteredId) {
+        long id = Long.parseLong(enteredId);
+        genreService.deleteById(id);
+    }
+
     private List<Long> getValidEnteredIds(List<Long> enteredIds,
                                           EntityType type,
                                           Map<Long, Author> availableAuthors,
