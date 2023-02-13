@@ -162,7 +162,7 @@ public class BookShellServiceImpl implements BookShellService {
         });
     }
 
-    private static String getBookLine(Book book) {
+    private String getBookLine(Book book) {
         var authorLine = getAuthorLine(book);
         var genreLine = getGenreLine(book.getGenres().stream().map(Genre::getName).toArray());
         var commentLine = getCommentsLine(book);
@@ -177,11 +177,11 @@ public class BookShellServiceImpl implements BookShellService {
                 genreLine;
     }
 
-    private static String getGenreLine(Object[] book) {
+    private String getGenreLine(Object[] book) {
         return Arrays.toString(book);
     }
 
-    private static String getCommentsLine(Book book) {
+    private String getCommentsLine(Book book) {
         if (book.getComments().isEmpty()) {
             return "";
         }
@@ -189,7 +189,7 @@ public class BookShellServiceImpl implements BookShellService {
         return Arrays.toString(texts);
     }
 
-    private static void printCommentsLine(Book book) {
+    private void printCommentsLine(Book book) {
         if (book.getComments().isEmpty()) {
             return;
         }
