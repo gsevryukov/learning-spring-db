@@ -6,5 +6,9 @@ insert into genre (id, "name")
 values (100, 'Образовательная книга'),
        (101, 'Художественная книга');
 -- book
-insert into book (id, "name", author_ids, genre_ids)
-values (100, 'Педагогическая поэма', array [100], array [100, 101]);
+insert into book (id, "name")
+values (100, 'Педагогическая поэма');
+-- book_author
+insert into book_author(book_id, author_id) values (100, 100);
+-- book_genre
+insert into book_genre(book_id, genre_id) values (100, 100), (100, 101);

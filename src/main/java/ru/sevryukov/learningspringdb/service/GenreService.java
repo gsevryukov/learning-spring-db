@@ -14,5 +14,5 @@ public interface GenreService {
 
     List<Genre> getAllByIds(List<Long> ids);
 
-    void deleteGenre(long id);
+    void deleteById(long id);
 }

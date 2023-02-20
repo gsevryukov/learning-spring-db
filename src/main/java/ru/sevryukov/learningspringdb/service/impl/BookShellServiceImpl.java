@@ -2,13 +2,12 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
+import ru.sevryukov.learningspringdb.model.Comment;
 import ru.sevryukov.learningspringdb.model.Genre;
-import ru.sevryukov.learningspringdb.service.AuthorService;
-import ru.sevryukov.learningspringdb.service.BookService;
+import ru.sevryukov.learningspringdb.model.enums.EntityType;
 import ru.sevryukov.learningspringdb.service.BookShellService;
-import ru.sevryukov.learningspringdb.service.GenreService;
+import ru.sevryukov.learningspringdb.service.EntityService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
 
 import java.util.Arrays;
@@ -21,38 +20,32 @@ public class BookShellServiceImpl implements BookShellService {
     public static final String BOOK_HEADERS = "ID\t\t" +
             "Book name\t\t" +
             "Book authors\t\t" +
+            "Book comments\t\t" +
             "Book genres\n";
+
+    public static final String COMMENT_HEADERS = "ID\t" + "Text\t";
+    public static final String ENTER_A_VALID_BOOK_ID = "Enter a valid book id!";
+
     private final UserAskService userAskService;
-    private final BookService bookService;
-    private final AuthorService authorService;
-    private final GenreService genreService;
+
+    private final EntityService entityService;
 
     @Override
     public void addBook() {
         var bookName = userAskService.askUser("Enter book name");
-        var availableAuthorIds = authorService.getAll().stream().map(Author::getId).toList();
-        var availableGenreIds = genreService.getAll().stream().map(Genre::getId).toList();
-        var enteredAuthorIds = getEnteredIds(availableAuthorIds, "author");
-        var enteredGenreIds = getEnteredIds(availableGenreIds, "genre");
-        if (!enteredAuthorIds.isEmpty() && !enteredGenreIds.isEmpty()) {
-            bookService.addBook(bookName, enteredAuthorIds, enteredGenreIds);
-        }
-
+        var authorIds = askForAuthorIds();
+        var genreIds = askForGenreIds();
+        entityService.addBook(bookName, authorIds, genreIds);
     }
 
     @Override
     public void printBook() {
-        var answer = userAskService.askUser("Enter valid book id...");
+        var answer = userAskService.askUser(ENTER_A_VALID_BOOK_ID);
         if (answer.equals("exit")) {
             return;
         }
         try {
-            var bookId = Long.parseLong(answer);
-            var availableIds = bookService.getAll().stream().map(Book::getId).toList();
-            if (!availableIds.contains(bookId)) {
-                throw new RuntimeException();
-            }
-            var book = bookService.getById(bookId);
+            var book = entityService.getBookById(answer);
             System.out.println(BOOK_HEADERS);
             System.out.println(getBookLine(book));
         } catch (Exception ex) {
@@ -63,79 +56,183 @@ public class BookShellServiceImpl implements BookShellService {
 
     @Override
     public void listAllBooks() {
-        printBooks();
+        printAllBooks();
     }
 
     @Override
     public void editBook() {
-        printBooks();
+        printAllBooks();
         var answer = userAskService.askUser("\nEnter book id to edit:");
         try {
-            var id = Long.parseLong(answer);
+            long id = Long.parseLong(answer);
             var newName = userAskService.askUser("\nEnter new book name...");
-            var availableAuthorIds = authorService.getAll().stream().map(Author::getId).toList();
-            var availableGenreIds = genreService.getAll().stream().map(Genre::getId).toList();
-            var enteredAuthorIds = getEnteredIds(availableAuthorIds, "author");
-            var enteredGenreIds = getEnteredIds(availableGenreIds, "genre");
-            bookService.editBook(id, newName, enteredAuthorIds, enteredGenreIds);
+            entityService.renameBook(id, newName);
         } catch (Exception ex) {
-            System.out.println("Enter a valid book id!");
+            System.out.println(ENTER_A_VALID_BOOK_ID);
             editBook();
         }
     }
 
     @Override
     public void removeBook() {
-        printBooks();
+        printAllBooks();
         var answer = userAskService.askUser("\nEnter book id to remove:");
         try {
-            var id = Long.parseLong(answer);
-            bookService.deleteBook(id);
+            long id = Long.parseLong(answer);
+            entityService.deleteBook(id);
             System.out.println("Book with id " + id + " was successfully removed");
         } catch (Exception ex) {
-            System.out.println("Enter a valid book id!");
+            System.out.println(ENTER_A_VALID_BOOK_ID);
             removeBook();
         }
     }
 
-    private void printBooks() {
+    @Override
+    public void addBookComment() {
+        printAllBooks();
+        var answer = userAskService.askUser("\nEnter book id to add comment:");
+        try {
+            long bookId = Long.parseLong(answer);
+            var commentText = userAskService.askUser("\nEnter your comment...");
+            entityService.addBookComment(bookId, commentText);
+        } catch (Exception ex) {
+            System.out.println(ENTER_A_VALID_BOOK_ID + ex);
+            addBookComment();
+        }
+    }
+
+    @Override
+    public void editBookComment() {
+        var booksWithComment = entityService.getAllBooks().stream().filter(b -> b.getComments() != null).toList();
+        if (booksWithComment.isEmpty()) {
+            System.out.println("No books found");
+            return;
+        }
+        printBooks(booksWithComment);
+        var answer = userAskService.askUser("\nEnter book id to edit comment:");
+        try {
+            var book = entityService.getBookById(answer);
+            printCommentsLine(book);
+            var commentIdStr = userAskService.askUser("\nEnter comment id to edit:");
+            long id = Long.parseLong(commentIdStr);
+            var text = userAskService.askUser("\nEnter text:");
+            entityService.editCommentById(id, text);
+        } catch (Exception ex) {
+            System.out.println("Enter a valid data!");
+            editBookComment();
+        }
+    }
+
+    @Override
+    public void removeBookComment() {
+        var booksWithComment = getBooksWithComment();
+        if (booksWithComment.isEmpty()) {
+            System.out.println("No books found");
+            return;
+        }
+        printBooks(booksWithComment);
+        var answer = userAskService.askUser("\nEnter book id to remove comment:");
+        try {
+            var book = entityService.getBookById(answer);
+            printCommentsLine(book);
+            var commentIdStr = userAskService.askUser("\nEnter comment id:");
+            long commentId = Long.parseLong(commentIdStr);
+            entityService.deleteCommentById(book, commentId);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            System.out.println("Enter a valid data!");
+            removeBookComment();
+        }
+    }
+
+    private List<Book> getBooksWithComment() {
+        return entityService.getAllBooks().stream().filter(b -> !b.getComments().isEmpty()).toList();
+    }
+
+    private void printAllBooks() {
+        var books = entityService.getAllBooks();
+        printBooks(books);
+    }
+
+    private void printBooks(List<Book> books) {
         System.out.println(BOOK_HEADERS);
-        bookService.getAll().forEach(v -> {
-            var bookLine = getBookLine(v);
+        books.forEach(book -> {
+            var bookLine = getBookLine(book);
             System.out.println(bookLine);
         });
     }
 
-    private static String getBookLine(Book book) {
+    private String getBookLine(Book book) {
+        var authorLine = getAuthorLine(book);
+        var genreLine = getGenreLine(book.getGenres().stream().map(Genre::getName).toArray());
+        var commentLine = getCommentsLine(book);
         return book.getId() +
                 "\t" +
                 book.getName() +
+                "\t"
+                + commentLine +
                 "\t" +
-                Arrays.toString(book.getAuthorNames().toArray()) +
+                authorLine +
                 "\t" +
-                Arrays.toString(book.getGenreNames().toArray());
+                genreLine;
     }
 
-    private List<Long> getEnteredIds(List<Long> validIds, String type) {
-        var result = userAskService.askUser(String.format("Enter comma separated %s ids:\nValid ids:\n", type)
-                + Arrays.toString(validIds.toArray()));
+    private String getGenreLine(Object[] book) {
+        return Arrays.toString(book);
+    }
+
+    private String getCommentsLine(Book book) {
+        if (book.getComments().isEmpty()) {
+            return "";
+        }
+        var texts = book.getComments().stream().map(Comment::getText).toArray();
+        return Arrays.toString(texts);
+    }
+
+    private void printCommentsLine(Book book) {
+        if (book.getComments().isEmpty()) {
+            return;
+        }
+        System.out.println(COMMENT_HEADERS);
+        book.getComments().forEach(c -> {
+            System.out.println(c.getId() + "\t" + c.getText());
+        });
+    }
+
+    private static String getAuthorLine(Book book) {
+        return Arrays
+                .toString(
+                        book.getAuthors()
+                                .stream()
+                                .map(a -> a.getFirstName() + " " + a.getLastname())
+                                .toArray()
+                );
+    }
+
+    private List<Long> askForIds(EntityType type) {
+        var t = type.name().toLowerCase();
+        var result = userAskService.askUser(String.format("Enter comma separated %s ids:\n", t));
+        var strings = Arrays.stream(result.split(",")).map(String::trim).toList();
+        return strings.stream().map(Long::parseLong).toList();
+    }
+
+    private List<Long> askForAuthorIds() {
         try {
-            var strings = Arrays.stream(result.split(",")).map(String::trim).toList();
-            var ids = strings.stream().map(Long::parseLong).toList();
-            var interSection = ids
-                    .stream()
-                    .filter(validIds::contains)
-                    .toList();
-            if (interSection.isEmpty()) {
-                throw new RuntimeException();
-            }
-            return ids;
+            return askForIds(EntityType.AUTHOR);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            getEnteredIds(validIds, type);
+            askForAuthorIds();
         }
         return List.of();
     }
 
-
+    private List<Long> askForGenreIds() {
+        try {
+            return askForIds(EntityType.GENRE);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            askForGenreIds();
+        }
+        return List.of();
+    }
 }

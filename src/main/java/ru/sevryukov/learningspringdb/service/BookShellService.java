@@ -12,4 +12,9 @@ public interface BookShellService {
 
     void removeBook();
 
+    void addBookComment();
+
+    void editBookComment();
+
+    void removeBookComment();
 }

@@ -60,6 +60,21 @@ public class ShellRunnerService {
         bookShellService.removeBook();
     }
 
+    @ShellMethod(key = "commentBook", value = "Add book comment")
+    public void commentBook() {
+        bookShellService.addBookComment();
+    }
+
+    @ShellMethod(key = "editBookComment", value = "Edit book comment")
+    public void editBookComment() {
+        bookShellService.editBookComment();
+    }
+
+    @ShellMethod(key = "removeBookComment", value = "Remove book comment")
+    public void removeBookComment() {
+        bookShellService.removeBookComment();
+    }
+
     @ShellMethod(key = "addGenre", value = "Add a genre")
     public void addGenre() {
         genreShellService.addGenre();
