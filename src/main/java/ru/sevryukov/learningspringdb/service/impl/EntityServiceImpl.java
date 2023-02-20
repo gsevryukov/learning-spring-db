@@ -54,7 +54,7 @@ public class EntityServiceImpl implements EntityService {
             var genres = new ArrayList<Genre>();
             validEnteredAuthorIds.forEach(a -> authors.add(availableAuthors.get(a)));
             validEnteredGenreIds.forEach(a -> genres.add(availableGenres.get(a)));
-            bookService.saveBook(new Book(0, bookName, null, authors, genres));
+            bookService.saveBook(new Book(bookName, null, authors, genres));
         }
     }
 
@@ -88,7 +88,7 @@ public class EntityServiceImpl implements EntityService {
     public void addBookComment(long bookId, String text) {
         var b = bookService.getById(bookId);
         var comments = b.getComments();
-        var c = commentService.saveComment(new Comment(0, text));
+        var c = commentService.saveComment(new Comment(text));
         comments.add(c);
         bookService.saveBook(b);
     }

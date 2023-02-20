@@ -1,6 +1,7 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Author;
@@ -20,7 +21,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void addAuthor(String firstName, String lastName) {
-        authorRepo.save(new Author(0, firstName, lastName));
+        authorRepo.save(new Author(firstName, lastName));
     }
 
     @Override
@@ -35,17 +36,18 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<Author> getAllByIds(List<Long> ids) {
-        return authorRepo.findAllByIds(ids);
+        return authorRepo.findAllByIdIn(ids);
     }
 
     @Override
     @Transactional
     public void deleteAuthor(long id) {
-        authorRepo.findById(id).ifPresentOrElse(
-                authorRepo::removeAuthor,
-                () -> {
-                    throw new EntityNotFoundException("No author with this id: " + id);
-                }
-        );
+        try {
+            authorRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityNotFoundException("No author with this id: " + id);
+        } catch (Exception ex) {
+            System.out.println("Author delete error: " + ex);
+        }
     }
 }

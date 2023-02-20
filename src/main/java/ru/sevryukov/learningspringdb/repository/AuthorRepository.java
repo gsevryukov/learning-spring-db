@@ -1,19 +1,11 @@
 package ru.sevryukov.learningspringdb.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.sevryukov.learningspringdb.model.Author;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface AuthorRepository {
+public interface AuthorRepository extends JpaRepository<Author, Long> {
 
-    Author save(Author author);
-
-    Optional<Author> findById(long id);
-
-    List<Author> findAll();
-
-    List<Author> findAllByIds(List<Long> ids);
-
-    void removeAuthor(Author author);
+    List<Author> findAllByIdIn(List<Long> ids);
 }

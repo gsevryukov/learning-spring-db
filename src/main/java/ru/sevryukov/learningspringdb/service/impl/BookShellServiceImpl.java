@@ -2,6 +2,7 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.Comment;
 import ru.sevryukov.learningspringdb.model.Genre;
@@ -194,9 +195,7 @@ public class BookShellServiceImpl implements BookShellService {
             return;
         }
         System.out.println(COMMENT_HEADERS);
-        book.getComments().forEach(c -> {
-            System.out.println(c.getId() + "\t" + c.getText());
-        });
+        book.getComments().forEach(c -> System.out.println(c.getId() + "\t" + c.getText()));
     }
 
     private static String getAuthorLine(Book book) {
@@ -218,21 +217,23 @@ public class BookShellServiceImpl implements BookShellService {
 
     private List<Long> askForAuthorIds() {
         try {
+            var ids = entityService.getAllAuthors().stream().map(Author::getId).toArray();
+            System.out.println("\nValid ids: " + Arrays.toString(ids));
             return askForIds(EntityType.AUTHOR);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            askForAuthorIds();
+            return askForAuthorIds();
         }
-        return List.of();
     }
 
     private List<Long> askForGenreIds() {
         try {
+            var ids = entityService.getAllGenres().stream().map(Genre::getId).toArray();
+            System.out.println("\nValid ids: " + Arrays.toString(ids));
             return askForIds(EntityType.GENRE);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            askForGenreIds();
+            return askForGenreIds();
         }
-        return List.of();
     }
 }

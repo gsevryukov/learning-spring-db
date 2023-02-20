@@ -1,6 +1,7 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Genre;
@@ -19,8 +20,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public void addGenre(String name) {
-        genreRepo.save(new Genre(0, name));
+    public Genre addGenre(String name) {
+        return genreRepo.save(new Genre(name));
     }
 
     @Override
@@ -35,19 +36,19 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public List<Genre> getAllByIds(List<Long> ids) {
-        return genreRepo.findAllByIds(ids);
+        return genreRepo.findAllByIdIn(ids);
     }
 
     @Override
     @Transactional
     public void deleteById(long id) {
-        genreRepo.findById(id).ifPresentOrElse(
-                genreRepo::removeGenre,
-                () -> {
-                    throw new EntityNotFoundException("No genre found with id: " + id);
-                }
-        );
-
+        try {
+            genreRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityNotFoundException("No genre found with id: " + id);
+        } catch (Exception ex) {
+            System.out.println("Genre delete error: " + ex);
+        }
     }
 
 }

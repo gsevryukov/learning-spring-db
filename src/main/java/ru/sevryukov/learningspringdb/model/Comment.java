@@ -24,4 +24,8 @@ public class Comment {
 
     @Column(name = "\"text\"")
     private String text;
+
+    public Comment(String text) {
+        this.text = text;
+    }
 }
