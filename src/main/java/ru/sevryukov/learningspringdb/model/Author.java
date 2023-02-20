@@ -28,4 +28,8 @@ public class Author {
     @Column(name = "last_name")
     private String lastname;
 
+    public Author(String firstName, String lastname) {
+        this.firstName = firstName;
+        this.lastname = lastname;
+    }
 }

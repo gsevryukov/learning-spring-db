@@ -1,6 +1,7 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Book;
@@ -49,10 +50,13 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public void deleteBook(long id) {
-        bookRepo.findById(id).ifPresentOrElse(
-                bookRepo::removeBook,
-                () -> getException(id)
-        );
+        try {
+            bookRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            getException(id);
+        } catch (Exception ex) {
+            System.out.println("Book delete error: " + ex);
+        }
     }
 
     private void getException(long id) {

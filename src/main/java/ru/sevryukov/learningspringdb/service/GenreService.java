@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GenreService {
 
-    void addGenre(String name);
+    Genre addGenre(String name);
 
     Genre getById(long id);
 

@@ -55,4 +55,11 @@ public class Book {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Genre> genres;
+
+    public Book(String name, List<Comment> comments, List<Author> authors, List<Genre> genres) {
+        this.name = name;
+        this.comments = comments;
+        this.authors = authors;
+        this.genres = genres;
+    }
 }
