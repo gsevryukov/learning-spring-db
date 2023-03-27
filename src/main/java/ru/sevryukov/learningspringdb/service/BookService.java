@@ -12,6 +12,8 @@ public interface BookService {
 
     List<Book> getAll();
 
+    List<Book> getAllCommentedByName(String name);
+
     void editBook(long id, String bookName);
 
     void deleteBook(long id);

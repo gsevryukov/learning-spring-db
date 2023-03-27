@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.GenreService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepo;
+    private final OutputService outputService;
 
     @Override
     @Transactional
@@ -47,7 +49,7 @@ public class GenreServiceImpl implements GenreService {
         } catch (EmptyResultDataAccessException ex) {
             throw new EntityNotFoundException("No genre found with id: " + id);
         } catch (Exception ex) {
-            System.out.println("Genre delete error: " + ex);
+            outputService.printOutput("Genre delete error: " + ex);
         }
     }
 

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Comment;
 import ru.sevryukov.learningspringdb.repository.CommentRepository;
 import ru.sevryukov.learningspringdb.service.CommentService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -14,6 +15,7 @@ import javax.persistence.EntityNotFoundException;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
+    private final OutputService outputService;
     private final CommentRepository commentRepo;
 
     @Override
@@ -43,7 +45,7 @@ public class CommentServiceImpl implements CommentService {
         } catch (EmptyResultDataAccessException ex) {
             throw new EntityNotFoundException("No comment found with id: " + id);
         } catch (Exception ex) {
-            System.out.println("Comment delete error: " + ex);
+            outputService.printOutput("Comment delete error: " + ex);
         }
     }
 

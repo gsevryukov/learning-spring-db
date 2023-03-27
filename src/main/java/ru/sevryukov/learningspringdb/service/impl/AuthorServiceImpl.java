@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.repository.AuthorRepository;
 import ru.sevryukov.learningspringdb.service.AuthorService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
+    private final OutputService outputService;
     private final AuthorRepository authorRepo;
 
     @Override
@@ -47,7 +49,7 @@ public class AuthorServiceImpl implements AuthorService {
         } catch (EmptyResultDataAccessException ex) {
             throw new EntityNotFoundException("No author with this id: " + id);
         } catch (Exception ex) {
-            System.out.println("Author delete error: " + ex);
+            outputService.printOutput("Author delete error: " + ex);
         }
     }
 }

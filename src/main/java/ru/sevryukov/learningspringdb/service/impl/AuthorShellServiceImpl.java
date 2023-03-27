@@ -2,27 +2,31 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.sevryukov.learningspringdb.service.AuthorService;
 import ru.sevryukov.learningspringdb.service.AuthorShellService;
-import ru.sevryukov.learningspringdb.service.EntityService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
 public class AuthorShellServiceImpl implements AuthorShellService {
 
-    public static final String AUTHOR_HEADER = "ID\tAuthor full name";
+    private final OutputService outputService;
+    private final AuthorService authorService;
     private final UserAskService userAskService;
-    private final EntityService entityService;
-
+    public static final String AUTHOR_HEADER = "ID\tAuthor full name";
     private static final String MSG_TEMPLATE = "Enter author %s name...";
 
     @Override
     public void addAuthor() {
         var firstName = userAskService.askUser(String.format(MSG_TEMPLATE, "first"));
         var lastName = userAskService.askUser(String.format(MSG_TEMPLATE, "last"));
-        entityService.addAuthor(firstName, lastName);
+        authorService.addAuthor(firstName, lastName);
     }
 
     @Override
@@ -32,11 +36,15 @@ public class AuthorShellServiceImpl implements AuthorShellService {
             return;
         }
         try {
-            var author = entityService.getAuthorById(answer);
-            System.out.println(AUTHOR_HEADER
+            var id = Long.parseLong(answer);
+            var author = authorService.getById(id);
+            if (isNull(author)) {
+                throw new EntityNotFoundException(String.format("No author with id %s found", id));
+            }
+            outputService.printOutput(AUTHOR_HEADER
                     + "\n" + author.getId() + "\t" + author.getFirstName() + " " + author.getLastname());
         } catch (Exception ex) {
-            System.out.println("Enter a valid author id!");
+            outputService.printOutput("Enter a valid author id!");
             printAuthor();
         }
     }
@@ -51,19 +59,20 @@ public class AuthorShellServiceImpl implements AuthorShellService {
         printAuthors();
         var answer = userAskService.askUser("\nEnter author id to remove:");
         try {
-            entityService.removeAuthor(answer);
-            System.out.println("Author with id " + answer + " was successfully removed");
+            var id = Long.parseLong(answer);
+            authorService.deleteAuthor(id);
+            outputService.printOutput("Author with id " + answer + " was successfully removed");
         } catch (Exception ex) {
-            System.out.println("Enter a valid author id!");
+            outputService.printOutput("Enter a valid author id!");
             removeAuthor();
         }
     }
 
     private void printAuthors() {
         var authors = new HashMap<Long, String>();
-        entityService.getAllAuthors().forEach(v -> authors.put(v.getId(), v.getFirstName() + " " + v.getLastname()));
-        System.out.println(AUTHOR_HEADER);
-        authors.forEach((id, fullName) -> System.out.println(id + "\t" + fullName));
+        authorService.getAll().forEach(v -> authors.put(v.getId(), v.getFirstName() + " " + v.getLastname()));
+        outputService.printOutput(AUTHOR_HEADER);
+        authors.forEach((id, fullName) -> outputService.printOutput(id + "\t" + fullName));
     }
 
 }

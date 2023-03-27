@@ -39,7 +39,7 @@ public class Book {
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_comment", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"))
-    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @OneToMany(targetEntity = Comment.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
     @BatchSize(size = 5)

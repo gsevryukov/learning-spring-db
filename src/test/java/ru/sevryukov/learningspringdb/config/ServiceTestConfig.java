@@ -7,8 +7,10 @@ import ru.sevryukov.learningspringdb.repository.BookRepository;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
 import ru.sevryukov.learningspringdb.service.GenreService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 import ru.sevryukov.learningspringdb.service.impl.BookServiceImpl;
 import ru.sevryukov.learningspringdb.service.impl.GenreServiceImpl;
+import ru.sevryukov.learningspringdb.service.impl.OutputServiceImpl;
 
 @TestConfiguration
 public class ServiceTestConfig {
@@ -20,12 +22,17 @@ public class ServiceTestConfig {
     private BookRepository bookRepository;
 
     @Bean
+    public OutputService outputService() {
+        return new OutputServiceImpl();
+    }
+
+    @Bean
     public GenreService genreService() {
-        return new GenreServiceImpl(genreRepository);
+        return new GenreServiceImpl(genreRepository, outputService());
     }
 
     @Bean
     public BookService bookService() {
-        return new BookServiceImpl(bookRepository);
+        return new BookServiceImpl(bookRepository, outputService());
     }
 }

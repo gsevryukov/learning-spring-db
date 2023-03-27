@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.repository.BookRepository;
 import ru.sevryukov.learningspringdb.service.BookService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepo;
+    private final OutputService outputService;
 
     @Override
     @Transactional
@@ -33,6 +35,11 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAll() {
         return bookRepo.findAll();
 
+    }
+
+    @Override
+    public List<Book> getAllCommentedByName(String name) {
+        return bookRepo.findAllByNameContainsAndCommentsIsNotNull(name);
     }
 
     @Override
@@ -55,7 +62,7 @@ public class BookServiceImpl implements BookService {
         } catch (EmptyResultDataAccessException ex) {
             getException(id);
         } catch (Exception ex) {
-            System.out.println("Book delete error: " + ex);
+            outputService.printOutput("Book delete error: " + ex);
         }
     }
 

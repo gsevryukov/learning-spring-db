@@ -2,23 +2,29 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.sevryukov.learningspringdb.service.EntityService;
+import ru.sevryukov.learningspringdb.service.GenreService;
 import ru.sevryukov.learningspringdb.service.GenreShellService;
+import ru.sevryukov.learningspringdb.service.OutputService;
 import ru.sevryukov.learningspringdb.service.UserAskService;
+
+import javax.persistence.EntityNotFoundException;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
 public class GenreShellServiceImpl implements GenreShellService {
 
+    private final GenreService genreService;
+    private final OutputService outputService;
+    private final UserAskService userAskService;
     public static final String GENRE_HEADER = "ID\tGenre name";
     public static final String ENTER_A_VALID_GENRE_ID = "Enter a valid genre id!";
-    private final UserAskService userAskService;
-    private final EntityService entityService;
 
     @Override
     public void addGenre() {
         var name = userAskService.askUser("Enter genre name...");
-        entityService.addGenre(name);
+        genreService.addGenre(name);
     }
 
     @Override
@@ -28,11 +34,15 @@ public class GenreShellServiceImpl implements GenreShellService {
             return;
         }
         try {
-            var genre = entityService.getGenreById(answer);
-            System.out.println(GENRE_HEADER
+            var id = Long.parseLong(answer);
+            var genre = genreService.getById(id);
+            if (isNull(genre)) {
+                throw new EntityNotFoundException(String.format("No genre wit id %s found.", id));
+            }
+            outputService.printOutput(GENRE_HEADER
                     + "\n" + genre.getId() + "\t" + genre.getName());
         } catch (Exception ex) {
-            System.out.println(ENTER_A_VALID_GENRE_ID);
+            outputService.printOutput(ENTER_A_VALID_GENRE_ID);
             printGenre();
         }
     }
@@ -47,17 +57,18 @@ public class GenreShellServiceImpl implements GenreShellService {
         printGenres();
         var answer = userAskService.askUser("\nEnter genre id to remove:");
         try {
-            entityService.removeGenre(answer);
-            System.out.println("Genre with id " + answer + " was successfully removed");
+            var id = Long.parseLong(answer);
+            genreService.deleteById(id);
+            outputService.printOutput("Genre with id " + answer + " was successfully removed");
         } catch (Exception ex) {
-            System.out.println(ENTER_A_VALID_GENRE_ID);
+            outputService.printOutput(ENTER_A_VALID_GENRE_ID);
             removeGenre();
         }
     }
 
     private void printGenres() {
-        System.out.println(GENRE_HEADER);
-        entityService.getAllGenres().forEach(v -> System.out.println(v.getId() + "\t" + v.getName()));
+        outputService.printOutput(GENRE_HEADER);
+        genreService.getAll().forEach(v -> outputService.printOutput(v.getId() + "\t" + v.getName()));
     }
 
 }
