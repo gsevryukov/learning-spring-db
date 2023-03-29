@@ -1,11 +1,13 @@
 package ru.sevryukov.learningspringdb.service;
 
+import ru.sevryukov.learningspringdb.model.Book;
+
 public interface BookCommentService {
 
-    void addBookComment();
+    String addBookComment(Book book, String comment);
 
-    void editBookComment();
+    String editBookComment(Book book, long commentId, String text);
 
-    void removeBookComment();
+    String removeBookComment(Book book, long commentId);
 
 }

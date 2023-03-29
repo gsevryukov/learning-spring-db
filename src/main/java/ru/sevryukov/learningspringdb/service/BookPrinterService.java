@@ -6,11 +6,8 @@ import java.util.List;
 
 public interface BookPrinterService {
 
-    void printBook(Book book);
+    String getBookString(Book book);
 
-    void printAllBooks();
+    String getAllBooks(List<Book> books);
 
-    void printBooks(List<Book> books);
-
-    void printCommentsLine(Book book);
 }

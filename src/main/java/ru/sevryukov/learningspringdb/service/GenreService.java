@@ -1,5 +1,6 @@
 package ru.sevryukov.learningspringdb.service;
 
+import org.springframework.data.domain.PageRequest;
 import ru.sevryukov.learningspringdb.model.Genre;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface GenreService {
 
     Genre getById(long id);
 
-    List<Genre> getAll();
+    List<Genre> getAll(PageRequest pageRequest);
 
     List<Genre> getAllByIds(List<Long> ids);
 
-    void deleteById(long id);
+    String deleteById(long id);
 }

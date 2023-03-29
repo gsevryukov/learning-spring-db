@@ -46,14 +46,14 @@ public class Book {
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Author.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Author> authors;
 
     @BatchSize(size = 5)
     @Fetch(FetchMode.SELECT)
     @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
-    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Genre> genres;
 
     public Book(String name, List<Comment> comments, List<Author> authors, List<Genre> genres) {

@@ -2,12 +2,12 @@ package ru.sevryukov.learningspringdb.service;
 
 public interface AuthorShellService {
 
-    void addAuthor();
+    String addAuthor(String firstName, String lastName);
 
-    void printAuthor();
+    String getAuthor(long id);
 
-    void listAllAuthors();
+    String getAllAuthors(int page, int size);
 
-    void removeAuthor();
+    String removeAuthor(long id);
 
 }

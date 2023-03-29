@@ -2,14 +2,13 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Genre;
 import ru.sevryukov.learningspringdb.repository.GenreRepository;
 import ru.sevryukov.learningspringdb.service.GenreService;
-import ru.sevryukov.learningspringdb.service.OutputService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +17,6 @@ import java.util.Optional;
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepo;
-    private final OutputService outputService;
 
     @Override
     @Transactional
@@ -32,9 +30,10 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<Genre> getAll() {
-        return genreRepo.findAll();
+    public List<Genre> getAll(PageRequest pageRequest) {
+        return genreRepo.findAll(pageRequest).stream().toList();
     }
+
 
     @Override
     public List<Genre> getAllByIds(List<Long> ids) {
@@ -43,14 +42,13 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Transactional
-    public void deleteById(long id) {
+    public String deleteById(long id) {
         try {
             genreRepo.deleteById(id);
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException("No genre found with id: " + id);
-        } catch (Exception ex) {
-            outputService.printOutput("Genre delete error: " + ex);
+            return String.format("No genre found with id %s", id);
         }
+        return "Genre removed";
     }
 
 }

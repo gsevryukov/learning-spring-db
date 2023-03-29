@@ -2,12 +2,12 @@ package ru.sevryukov.learningspringdb.service;
 
 public interface GenreShellService {
 
-    void addGenre();
+    String addGenre(String name);
 
-    void printGenre();
+    String getGenre(long id);
 
-    void listAllGenres();
+    String listAllGenres(int page, int size);
 
-    void removeGenre();
+    String removeGenre(long id);
 
 }

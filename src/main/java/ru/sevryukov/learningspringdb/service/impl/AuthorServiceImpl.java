@@ -2,14 +2,13 @@ package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.repository.AuthorRepository;
 import ru.sevryukov.learningspringdb.service.AuthorService;
-import ru.sevryukov.learningspringdb.service.OutputService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +16,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthorServiceImpl implements AuthorService {
 
-    private final OutputService outputService;
     private final AuthorRepository authorRepo;
 
     @Override
@@ -32,24 +30,24 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> getAll() {
-        return authorRepo.findAll();
-    }
-
-    @Override
     public List<Author> getAllByIds(List<Long> ids) {
         return authorRepo.findAllByIdIn(ids);
     }
 
     @Override
     @Transactional
-    public void deleteAuthor(long id) {
+    public List<Author> getAll(PageRequest pageRequest) {
+        return authorRepo.findAll(pageRequest).stream().toList();
+    }
+
+    @Override
+    @Transactional
+    public String deleteAuthor(long id) {
         try {
             authorRepo.deleteById(id);
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException("No author with this id: " + id);
-        } catch (Exception ex) {
-            outputService.printOutput("Author delete error: " + ex);
+            return String.format("No author with this id %s", id);
         }
+        return "Author removed";
     }
 }

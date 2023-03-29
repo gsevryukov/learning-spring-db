@@ -1,13 +1,11 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.sevryukov.learningspringdb.service.GenrePrinterService;
 import ru.sevryukov.learningspringdb.service.GenreService;
 import ru.sevryukov.learningspringdb.service.GenreShellService;
-import ru.sevryukov.learningspringdb.service.OutputService;
-import ru.sevryukov.learningspringdb.service.UserAskService;
-
-import javax.persistence.EntityNotFoundException;
 
 import static java.util.Objects.isNull;
 
@@ -16,59 +14,35 @@ import static java.util.Objects.isNull;
 public class GenreShellServiceImpl implements GenreShellService {
 
     private final GenreService genreService;
-    private final OutputService outputService;
-    private final UserAskService userAskService;
-    public static final String GENRE_HEADER = "ID\tGenre name";
-    public static final String ENTER_A_VALID_GENRE_ID = "Enter a valid genre id!";
+    private final GenrePrinterService genrePrinterService;
 
     @Override
-    public void addGenre() {
-        var name = userAskService.askUser("Enter genre name...");
+    public String addGenre(String name) {
         genreService.addGenre(name);
+        return "Genre added";
     }
 
     @Override
-    public void printGenre() {
-        var answer = userAskService.askUser("Enter genre id...");
-        if (answer.equals("exit")) {
-            return;
+    public String getGenre(long id) {
+        var genre = genreService.getById(id);
+        if (isNull(genre)) {
+            return (String.format("No genre with id %s found.", id));
         }
-        try {
-            var id = Long.parseLong(answer);
-            var genre = genreService.getById(id);
-            if (isNull(genre)) {
-                throw new EntityNotFoundException(String.format("No genre wit id %s found.", id));
-            }
-            outputService.printOutput(GENRE_HEADER
-                    + "\n" + genre.getId() + "\t" + genre.getName());
-        } catch (Exception ex) {
-            outputService.printOutput(ENTER_A_VALID_GENRE_ID);
-            printGenre();
-        }
+        return genrePrinterService.getGenrerString(genre);
     }
 
     @Override
-    public void listAllGenres() {
-        printGenres();
+    public String listAllGenres(int page, int size) {
+        var p = PageRequest.of(page, size);
+        var genres = genreService.getAll(p);
+        if (genres.isEmpty()) {
+            return "No genres found.";
+        }
+        return genrePrinterService.getGenresString(genres);
     }
 
     @Override
-    public void removeGenre() {
-        printGenres();
-        var answer = userAskService.askUser("\nEnter genre id to remove:");
-        try {
-            var id = Long.parseLong(answer);
-            genreService.deleteById(id);
-            outputService.printOutput("Genre with id " + answer + " was successfully removed");
-        } catch (Exception ex) {
-            outputService.printOutput(ENTER_A_VALID_GENRE_ID);
-            removeGenre();
-        }
+    public String removeGenre(long id) {
+        return genreService.deleteById(id);
     }
-
-    private void printGenres() {
-        outputService.printOutput(GENRE_HEADER);
-        genreService.getAll().forEach(v -> outputService.printOutput(v.getId() + "\t" + v.getName()));
-    }
-
 }

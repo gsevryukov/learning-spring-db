@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface BookAddService {
 
-    void addBook(String bookName, List<Long> enteredAuthorIds, List<Long> enteredGenreIds);
+    String addBook(String bookName, List<Long> enteredAuthorIds, List<Long> enteredGenreIds);
 
 }
