@@ -35,7 +35,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Author> getAll(PageRequest pageRequest) {
         return authorRepo.findAll(pageRequest).stream().toList();
     }

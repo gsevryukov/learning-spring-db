@@ -30,7 +30,7 @@ public class BookAddServiceImpl implements BookAddService {
         if (genres.isEmpty()) {
             return "No genres found by entered ids";
         }
-        bookService.saveBook(new Book(bookName, null, authors, genres));
+        bookService.saveBook(new Book(bookName, authors, genres));
         return "Book saved.";
     }
 

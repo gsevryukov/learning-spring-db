@@ -1,8 +1,9 @@
 package ru.sevryukov.learningspringdb.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -21,7 +22,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,9 +58,8 @@ public class Book {
     @ManyToMany(targetEntity = Genre.class, cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Genre> genres;
 
-    public Book(String name, List<Comment> comments, List<Author> authors, List<Genre> genres) {
+    public Book(String name, List<Author> authors, List<Genre> genres) {
         this.name = name;
-        this.comments = comments;
         this.authors = authors;
         this.genres = genres;
     }

@@ -31,7 +31,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public String getBook(long id) {
         var book = bookService.getById(id);
         if (isNull(book)) {
@@ -41,7 +41,7 @@ public class BookShellServiceImpl implements BookShellService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public String getBooks(int page, int size) {
         var books = bookService.getAll(PageRequest.of(page, size));
         if (books.isEmpty()) {
