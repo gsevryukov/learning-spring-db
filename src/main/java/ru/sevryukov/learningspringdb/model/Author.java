@@ -1,8 +1,9 @@
 package ru.sevryukov.learningspringdb.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
+//@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,4 +31,13 @@ public class Author {
     @Column(name = "last_name")
     private String lastname;
 
+    public Author(String firstName, String lastname) {
+        this.firstName = firstName;
+        this.lastname = lastname;
+    }
+
+    @Override
+    public String toString() {
+        return id + "\t" + firstName + " " + lastname;
+    }
 }

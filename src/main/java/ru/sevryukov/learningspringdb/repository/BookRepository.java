@@ -1,17 +1,11 @@
 package ru.sevryukov.learningspringdb.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.sevryukov.learningspringdb.model.Book;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface BookRepository {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
-    Book save(Book book);
-
-    Optional<Book> findById(long id);
-
-    List<Book> findAll();
-
-    void removeBook(Book book);
+    List<Book> findAllByNameContainsAndCommentsIsNotNull(String name);
 }

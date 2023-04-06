@@ -1,5 +1,6 @@
 package ru.sevryukov.learningspringdb.service;
 
+import org.springframework.data.domain.PageRequest;
 import ru.sevryukov.learningspringdb.model.Book;
 
 import java.util.List;
@@ -10,10 +11,8 @@ public interface BookService {
 
     Book getById(long id);
 
-    List<Book> getAll();
+    List<Book> getAll(PageRequest pageRequest);
 
-    void editBook(long id, String bookName);
-
-    void deleteBook(long id);
+    String deleteBook(long id);
 
 }

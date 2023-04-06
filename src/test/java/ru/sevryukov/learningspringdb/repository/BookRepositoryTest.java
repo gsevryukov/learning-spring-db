@@ -1,4 +1,4 @@
-package ru.sevryukov.learningspringdb.jpa;
+package ru.sevryukov.learningspringdb.repository;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,15 +6,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.Import;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.Genre;
-import ru.sevryukov.learningspringdb.repository.BookRepository;
-import ru.sevryukov.learningspringdb.repository.GenreRepository;
-import ru.sevryukov.learningspringdb.repository.jpa.BookRepositoryJpa;
-import ru.sevryukov.learningspringdb.repository.jpa.GenreRepositoryJpa;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -23,17 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
-@Import({BookRepositoryJpa.class, GenreRepositoryJpa.class})
-class BookJpaRepositoryTest {
+class BookRepositoryTest {
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    GenreRepository genreRepository;
-
-    @Autowired
-    TestEntityManager manager;
+    private GenreRepository genreRepository;
 
     @ParameterizedTest
     @MethodSource("getNewBook")
@@ -75,14 +65,14 @@ class BookJpaRepositoryTest {
     @DisplayName("Проверка удаления книги")
     void deleteByIdTest(Book defaultBook) {
         var ent = bookRepository.findById(defaultBook.getId()).get();
-        bookRepository.removeBook(ent);
+        bookRepository.delete(ent);
         var all = bookRepository.findAll();
         assertEquals(0, all.size());
     }
 
     @Test
     void getAllByIdsTest() {
-        var all = genreRepository.findAllByIds(List.of(100L, 101L));
+        var all = genreRepository.findAllByIdIn(List.of(100L, 101L));
         assertEquals(2, all.size());
     }
 

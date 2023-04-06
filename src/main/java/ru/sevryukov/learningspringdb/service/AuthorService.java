@@ -1,5 +1,6 @@
 package ru.sevryukov.learningspringdb.service;
 
+import org.springframework.data.domain.PageRequest;
 import ru.sevryukov.learningspringdb.model.Author;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface AuthorService {
 
     Author getById(long id);
 
-    List<Author> getAll();
-
     List<Author> getAllByIds(List<Long> ids);
 
-    void deleteAuthor(long id);
+    List<Author> getAll(PageRequest pageRequest);
+
+    String deleteAuthor(long id);
 }

@@ -1,13 +1,14 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.repository.AuthorRepository;
 import ru.sevryukov.learningspringdb.service.AuthorService;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Transactional
     public void addAuthor(String firstName, String lastName) {
-        authorRepo.save(new Author(0, firstName, lastName));
+        authorRepo.save(new Author(firstName, lastName));
     }
 
     @Override
@@ -29,23 +30,24 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public List<Author> getAll() {
-        return authorRepo.findAll();
+    public List<Author> getAllByIds(List<Long> ids) {
+        return authorRepo.findAllByIdIn(ids);
     }
 
     @Override
-    public List<Author> getAllByIds(List<Long> ids) {
-        return authorRepo.findAllByIds(ids);
+    @Transactional(readOnly = true)
+    public List<Author> getAll(PageRequest pageRequest) {
+        return authorRepo.findAll(pageRequest).stream().toList();
     }
 
     @Override
     @Transactional
-    public void deleteAuthor(long id) {
-        authorRepo.findById(id).ifPresentOrElse(
-                authorRepo::removeAuthor,
-                () -> {
-                    throw new EntityNotFoundException("No author with this id: " + id);
-                }
-        );
+    public String deleteAuthor(long id) {
+        try {
+            authorRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            return String.format("No author with this id %s", id);
+        }
+        return "Author removed";
     }
 }

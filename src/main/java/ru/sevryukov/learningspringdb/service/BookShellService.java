@@ -1,20 +1,22 @@
 package ru.sevryukov.learningspringdb.service;
 
+import java.util.List;
+
 public interface BookShellService {
 
-    void addBook();
+    String addBook(String name, List<Long> authorIds, List<Long> genreIds);
 
-    void printBook();
+    String getBook(long id);
 
-    void listAllBooks();
+    String getBooks(int page, int size);
 
-    void editBook();
+    String renameBook(long id, String newName);
 
-    void removeBook();
+    String removeBook(long id);
 
-    void addBookComment();
+    String addBookComment(long bookId, String comment);
 
-    void editBookComment();
+    String editBookComment(long bookId, long commentId, String text);
 
-    void removeBookComment();
+    String removeBookComment(long bookId, long commentId);
 }

@@ -1,13 +1,12 @@
 package ru.sevryukov.learningspringdb.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sevryukov.learningspringdb.model.Comment;
 import ru.sevryukov.learningspringdb.repository.CommentRepository;
 import ru.sevryukov.learningspringdb.service.CommentService;
-
-import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,27 +21,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void editComment(long id, String text) {
-        commentRepo.findById(id).ifPresentOrElse(
-                comment -> {
-                    comment.setText(text);
-                    commentRepo.save(comment);
-                },
-                () -> {
-                    throw new EntityNotFoundException("No comment found with id: " + id);
-                }
-        );
-    }
-
-    @Override
     @Transactional
-    public void deleteComment(long id) {
-        commentRepo.findById(id).ifPresentOrElse(
-                commentRepo::removeComment,
-                () -> {
-                    throw new EntityNotFoundException("No comment found with id: " + id);
-                }
-        );
+    public String deleteComment(long id) {
+        try {
+            commentRepo.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            return String.format("No comment found with id %s", id);
+        }
+        return "Comment removed.";
     }
 
 }
