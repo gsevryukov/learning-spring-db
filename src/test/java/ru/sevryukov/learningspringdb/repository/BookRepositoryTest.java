@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import ru.sevryukov.learningspringdb.model.Author;
 import ru.sevryukov.learningspringdb.model.Book;
 import ru.sevryukov.learningspringdb.model.Genre;
@@ -21,13 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class BookRepositoryTest {
 
     @Autowired
-    BookRepository bookRepository;
+    private BookRepository bookRepository;
 
     @Autowired
-    GenreRepository genreRepository;
-
-    @Autowired
-    TestEntityManager manager;
+    private GenreRepository genreRepository;
 
     @ParameterizedTest
     @MethodSource("getNewBook")
